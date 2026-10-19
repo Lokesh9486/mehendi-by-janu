@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -32,7 +33,7 @@ export function Hero() {
           (Tirupur), Tamil Nadu.
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-8">
-          <a
+          <Link
             href="#contact"
             className={cn(
               buttonVariants({ size: "lg" }),
@@ -42,11 +43,11 @@ export function Hero() {
           >
             Book Your Mehendi
             <ArrowUpRight className="size-4" aria-hidden="true" />
-          </a>
-          <a href="#gallery" className={quietLinkClass}>
+          </Link>
+          <Link href="#gallery" className={quietLinkClass}>
             Explore Designs
             <ArrowDown className="size-3.5" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t border-burgundy/15 pt-4 font-mono text-[8px] tracking-[0.1em] text-[#817568] uppercase md:mt-10 md:text-[9px]">
           <span>Bridal</span>

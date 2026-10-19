@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Service } from "@/lib/site-data";
 import { useEnquiry } from "@/components/enquiry-context";
@@ -15,7 +16,7 @@ export function ServiceCard({
   const { selectService } = useEnquiry();
 
   return (
-    <a
+    <Link
       href="#contact"
       onClick={() => selectService(service.title)}
       aria-label={`Enquire about ${service.title}`}
@@ -49,6 +50,6 @@ export function ServiceCard({
       <span className="absolute top-5 right-[48px] z-10 max-w-[95px] text-right font-mono text-[7px] leading-[1.35] tracking-[0.04em] text-ivory/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 max-md:top-7 max-md:right-10 max-md:left-3 max-md:max-w-none max-md:text-left [@media(hover:none)]:opacity-100">
         Illustrative · not actual client work
       </span>
-    </a>
+    </Link>
   );
 }

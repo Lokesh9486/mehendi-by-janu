@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEnquiry } from "@/components/enquiry-context";
 import type { ReactNode } from "react";
 
@@ -15,12 +16,12 @@ export function SelectServiceLink({
   const { selectService } = useEnquiry();
 
   return (
-    <a
+    <Link
       href="#contact"
       className={className}
       onClick={() => selectService(service)}
     >
       {children}
-    </a>
+    </Link>
   );
 }

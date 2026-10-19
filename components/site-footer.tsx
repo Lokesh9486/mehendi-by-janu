@@ -1,9 +1,14 @@
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { FooterYear } from "@/components/footer-year";
-import { navigation } from "@/lib/site-data";
+import { navigation, withAnchorPrefix } from "@/lib/site-data";
 import { siteConfig } from "@/lib/siteConfig";
 
-export function SiteFooter() {
+type SiteFooterProps = {
+  anchorPrefix?: string;
+};
+
+export function SiteFooter({ anchorPrefix = "" }: SiteFooterProps) {
   return (
     <footer className="bg-burgundy px-[6%] pt-[58px] pb-6 text-ivory">
       <div className="mx-auto grid w-full max-w-[1320px] gap-9 border-b border-champagne/20 pb-11 md:grid-cols-[1.5fr_.7fr_1fr] md:gap-12">
@@ -25,14 +30,14 @@ export function SiteFooter() {
             className="grid grid-cols-2 gap-x-5 gap-y-2.5 md:grid-cols-1"
           >
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                href={withAnchorPrefix(item.href, anchorPrefix)}
                 data-testid={`link-footer-${item.label.toLowerCase()}`}
                 className="text-[11px] text-ivory/75 transition-colors hover:text-ivory"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>

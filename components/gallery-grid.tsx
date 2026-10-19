@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight, X } from "lucide-react";
-import { galleryCategories, services } from "@/lib/site-data";
+import {
+  galleryCategories,
+  services,
+  type Service,
+} from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,16 +17,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export function GalleryGrid() {
+type GalleryGridProps = {
+  images?: Service[];
+  showFilters?: boolean;
+};
+
+export function GalleryGrid({
+  images = services,
+  showFilters = true,
+}: GalleryGridProps) {
   const [activeCategory, setActiveCategory] = useState("All designs");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
-  const visibleGallery = services.filter((service) =>
-    galleryCategories
-      .find((category) => category.label === activeCategory)
-      ?.titles.includes(service.title),
-  );
+  const visibleGallery = showFilters
+    ? images.filter((service) =>
+        galleryCategories
+          .find((category) => category.label === activeCategory)
+          ?.titles.includes(service.title),
+      )
+    : images;
   const currentImage =
     lightboxIndex === null ? null : visibleGallery[lightboxIndex] ?? null;
 
@@ -65,39 +79,46 @@ export function GalleryGrid() {
 
   return (
     <>
+      {showFilters ? (
+        <div
+          className="mt-[30px] flex flex-wrap gap-x-2 gap-y-2 border-t border-burgundy/15 pt-4"
+          role="group"
+          aria-label="Filter gallery by category"
+        >
+          {galleryCategories.map((category) => {
+            const active = activeCategory === category.label;
+
+            return (
+              <Button
+                key={category.label}
+                type="button"
+                variant={active ? "default" : "outline"}
+                size="sm"
+                aria-pressed={active}
+                onClick={() => {
+                  setActiveCategory(category.label);
+                  setLightboxIndex(null);
+                }}
+                className={cn(
+                  "h-auto rounded-none border px-3.5 py-2.5 text-[10px] tracking-[0.02em]",
+                  active
+                    ? "border-burgundy bg-burgundy text-ivory hover:bg-olive"
+                    : "border-burgundy/25 bg-transparent text-burgundy hover:bg-champagne/45",
+                )}
+              >
+                {category.label}
+              </Button>
+            );
+          })}
+        </div>
+      ) : null}
+
       <div
-        className="mt-[30px] flex flex-wrap gap-x-2 gap-y-2 border-t border-burgundy/15 pt-4"
-        role="group"
-        aria-label="Filter gallery by category"
+        className={cn(
+          "grid auto-rows-[185px] grid-cols-2 gap-[9px] sm:auto-rows-[220px] md:auto-rows-[230px] md:grid-cols-3 lg:auto-rows-[270px] lg:grid-cols-4",
+          showFilters ? "mt-7" : "mt-[30px]",
+        )}
       >
-        {galleryCategories.map((category) => {
-          const active = activeCategory === category.label;
-
-          return (
-            <Button
-              key={category.label}
-              type="button"
-              variant={active ? "default" : "outline"}
-              size="sm"
-              aria-pressed={active}
-              onClick={() => {
-                setActiveCategory(category.label);
-                setLightboxIndex(null);
-              }}
-              className={cn(
-                "h-auto rounded-none border px-3.5 py-2.5 text-[10px] tracking-[0.02em]",
-                active
-                  ? "border-burgundy bg-burgundy text-ivory hover:bg-olive"
-                  : "border-burgundy/25 bg-transparent text-burgundy hover:bg-champagne/45",
-              )}
-            >
-              {category.label}
-            </Button>
-          );
-        })}
-      </div>
-
-      <div className="mt-7 grid auto-rows-[185px] grid-cols-2 gap-[9px] sm:auto-rows-[220px] md:auto-rows-[230px] md:grid-cols-3 lg:auto-rows-[270px] lg:grid-cols-4">
         {visibleGallery.map((service, index) => (
           <figure
             key={service.title}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { bookingSteps } from "@/lib/site-data";
 import { buttonVariants } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function BookingSection() {
         </div>
 
         <div className="mt-10 flex justify-center">
-          <a
+          <Link
             href="#contact"
             className={cn(
               buttonVariants({ size: "lg" }),
@@ -70,7 +71,7 @@ export function BookingSection() {
           >
             Book Your Mehendi
             <ArrowRight className="size-3.5" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

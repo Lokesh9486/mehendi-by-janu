@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ServiceCard } from "@/components/service-card";
 import { buttonVariants } from "@/components/ui/button";
@@ -55,7 +56,7 @@ export function ServicesSection() {
         </div>
 
         <div className="mt-9 flex justify-center">
-          <a
+          <Link
             href="#contact"
             className={cn(
               buttonVariants({ size: "lg" }),
@@ -65,7 +66,7 @@ export function ServicesSection() {
           >
             Enquire About A Design
             <ArrowRight className="size-3.5" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

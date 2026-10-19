@@ -21,6 +21,9 @@ export const services: Service[] = [
   { title: "Special Occasion Henna Art", description: "A design for the moments that deserve to be remembered.", image: "/images/special-occasion-henna.jpg", alt: "Illustrative henna art for a special occasion; not Janu’s client work." },
 ];
 
+/** A short selection for the home page gallery. */
+export const featuredGallery = services.slice(0, 6);
+
 export const galleryCategories = [
   { label: "All designs", titles: services.map((service) => service.title) },
   { label: "Bridal", titles: ["Bridal Mehendi"] },
@@ -34,10 +37,15 @@ export const navigation = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
-  { label: "Gallery", href: "#gallery" },
+  { label: "Gallery", href: "/gallery" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
+
+export function withAnchorPrefix(href: string, prefix: string) {
+  if (href.startsWith("/")) return href;
+  return prefix ? `${prefix}${href}` : href;
+}
 
 export const occasions = ["Wedding", "Engagement", "Baby Shower", "Festival", "Other"];
 

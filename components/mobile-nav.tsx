@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowUpRight, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +11,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { navigation } from "@/lib/site-data";
+import { navigation, withAnchorPrefix } from "@/lib/site-data";
 
-export function MobileNav() {
+type MobileNavProps = {
+  anchorPrefix?: string;
+};
+
+export function MobileNav({ anchorPrefix = "" }: MobileNavProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,25 +46,25 @@ export function MobileNav() {
           </SheetDescription>
           <nav aria-label="Mobile navigation" className="flex flex-col">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                href={withAnchorPrefix(item.href, anchorPrefix)}
                 onClick={() => setOpen(false)}
                 className="border-b border-burgundy/15 px-6 py-4 font-serif text-[27px] leading-none text-burgundy transition-colors hover:bg-champagne/35"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="px-6 pt-6">
-            <a
-              href="#contact"
+            <Link
+              href={withAnchorPrefix("#contact", anchorPrefix)}
               onClick={() => setOpen(false)}
               className="flex items-center justify-between bg-burgundy px-5 py-4 text-[11px] tracking-[0.06em] text-ivory"
             >
               Book Your Mehendi
               <ArrowUpRight className="size-4" aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </SheetContent>
       </Sheet>
