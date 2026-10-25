@@ -1,5 +1,7 @@
 /**
- * Owner setup: enter verified contact destinations here before publishing.
+ * Site-wide defaults. Contact details are edited from the admin Contact screen
+ * after the first run; the values below are only used to seed that row.
+ *
  * WhatsApp must be the full international number using digits only, no +.
  *
  * Set NEXT_PUBLIC_SITE_URL to the verified production domain so canonical

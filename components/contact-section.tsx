@@ -1,4 +1,5 @@
 import { MapPin } from "lucide-react";
+import { ContactLinks } from "@/components/contact-links";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { siteConfig } from "@/lib/siteConfig";
 import {
@@ -38,9 +39,12 @@ export function ContactSection() {
             Share your occasion, preferred date, and event location to enquire.
             Your appointment is confirmed directly with Janu.
           </p>
-          <div className="mt-7 flex items-center gap-2.5 text-[11px] text-[#685f55]">
-            <MapPin className="size-4 text-gold" aria-hidden="true" />
-            <span>{siteConfig.location}</span>
+          <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-[11px] text-[#685f55]">
+            <span className="flex items-center gap-2.5">
+              <MapPin className="size-4 text-gold" aria-hidden="true" />
+              {siteConfig.location}
+            </span>
+            <ContactLinks variant="inline" />
           </div>
         </div>
 

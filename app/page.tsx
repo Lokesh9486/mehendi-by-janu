@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { AboutSection } from "@/components/about-section";
 import { BookingSection } from "@/components/booking-section";
 import { BridalSection } from "@/components/bridal-section";
@@ -10,14 +11,25 @@ import { Hero } from "@/components/hero";
 import { PageFrame } from "@/components/page-frame";
 import { QualitiesSection } from "@/components/qualities-section";
 import { ServicesSection } from "@/components/services-section";
+import { listGalleryItems } from "@/lib/server/gallery";
 import { faqJsonLd, serializeJsonLd } from "@/lib/seo";
-import { featuredGallery } from "@/lib/site-data";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
 };
+
+async function HomeGallery() {
+  await connection();
+
+  const items = listGalleryItems(6);
+
+  if (items.length === 0) return null;
+
+  return <GallerySection items={items} showFilters={false} showMore />;
+}
 
 export default function Home() {
   return (
@@ -31,11 +43,9 @@ export default function Home() {
         <AboutSection />
         <ServicesSection />
         <BridalSection />
-        <GallerySection
-          images={featuredGallery}
-          showFilters={false}
-          showMore
-        />
+        <Suspense fallback={null}>
+          <HomeGallery />
+        </Suspense>
         <QualitiesSection />
         <BookingSection />
         <FaqSection />

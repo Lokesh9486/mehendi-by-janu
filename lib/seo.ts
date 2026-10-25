@@ -25,11 +25,6 @@ export function absoluteUrl(path = "/") {
   return new URL(path, `${siteConfig.siteUrl}/`).toString();
 }
 
-const contactDetails = {
-  ...(siteConfig.phoneNumber ? { telephone: siteConfig.phoneNumber } : {}),
-  ...(siteConfig.instagramUrl ? { sameAs: [siteConfig.instagramUrl] } : {}),
-};
-
 export const siteJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -58,7 +53,6 @@ export const siteJsonLd = {
         { "@type": "Country", name: "India" },
       ],
       serviceType: services.map((service) => service.title),
-      ...contactDetails,
     },
     {
       "@type": "WebSite",
@@ -128,5 +122,3 @@ export const faqJsonLd = {
 export function serializeJsonLd(value: unknown) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
-
-export const serializedSiteJsonLd = serializeJsonLd(siteJsonLd);

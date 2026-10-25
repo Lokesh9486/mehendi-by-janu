@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { FooterYear } from "@/components/footer-year";
+import { ContactLinks } from "@/components/contact-links";
 import { navigation, withAnchorPrefix } from "@/lib/site-data";
 import { siteConfig } from "@/lib/siteConfig";
 
@@ -47,48 +47,23 @@ export function SiteFooter({ anchorPrefix = "" }: SiteFooterProps) {
             Location &amp; contact
           </p>
           <p>{siteConfig.location}</p>
-          {siteConfig.phoneNumber ? (
-            <a
-              href={`tel:${siteConfig.phoneNumber}`}
-              className="mt-1 flex items-center gap-1 hover:text-ivory"
-            >
-              Phone {siteConfig.phoneNumber}
-            </a>
-          ) : (
-            <p className="mt-1">Phone contact to be added.</p>
-          )}
-          {siteConfig.instagramUrl ? (
-            <a
-              href={siteConfig.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 flex items-center gap-1 hover:text-ivory"
-            >
-              Instagram
-              <ArrowUpRight className="size-3" aria-hidden="true" />
-            </a>
-          ) : (
-            <p className="mt-1">Instagram details to be added.</p>
-          )}
-          {siteConfig.whatsappNumber ? (
-            <a
-              href={`https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 flex items-center gap-1 hover:text-ivory"
-            >
-              WhatsApp enquiries
-              <ArrowUpRight className="size-3" aria-hidden="true" />
-            </a>
-          ) : (
-            <p className="mt-1">WhatsApp contact to be added.</p>
-          )}
+          <ContactLinks />
         </div>
       </div>
 
       <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-1.5 pt-5 font-mono text-[7px] tracking-[0.1em] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
         <span>© <FooterYear /> Mehandi by Janu</span>
-        <span>Tiruppur (Tirupur) · Tamil Nadu</span>
+        <span className="flex items-center gap-2.5">
+          <span>Tiruppur (Tirupur) · Tamil Nadu</span>
+          <span aria-hidden="true" className="text-ivory/25">·</span>
+          <Link
+            href="/admin/login"
+            data-testid="link-footer-admin"
+            className="tracking-[0.14em] uppercase transition-colors hover:text-champagne"
+          >
+            Admin
+          </Link>
+        </span>
       </div>
     </footer>
   );

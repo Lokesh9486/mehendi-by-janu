@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { GallerySection } from "@/components/gallery-section";
 import { PageFrame } from "@/components/page-frame";
+import { listGalleryItems } from "@/lib/server/gallery";
 import {
   defaultOgImage,
   galleryDescription,
@@ -9,7 +12,6 @@ import {
   galleryTitle,
   serializeJsonLd,
 } from "@/lib/seo";
-import { services } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: galleryTitle,
@@ -41,6 +43,24 @@ export const metadata: Metadata = {
   },
 };
 
+async function GalleryCollection() {
+  await connection();
+
+  const items = listGalleryItems();
+
+  return (
+    <GallerySection
+      items={items}
+      showFilters
+      title="Mehendi Gallery"
+      eyebrow="The full collection"
+      note="Bridal, Arabic, traditional and celebration designs from the studio collection. Use the filters to explore, and enquire for your own date."
+      headingLevel="h1"
+      contactHref="/#contact"
+    />
+  );
+}
+
 export default function GalleryPage() {
   return (
     <>
@@ -49,15 +69,9 @@ export default function GalleryPage() {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(galleryJsonLd) }}
       />
       <PageFrame anchorPrefix="/">
-        <GallerySection
-          images={services}
-          showFilters
-          title="Mehendi Gallery"
-          eyebrow="The full collection"
-          note="Explore every bridal, Arabic, traditional, and celebration design in the collection. These illustrative images are not actual client work."
-          headingLevel="h1"
-          contactHref="/#contact"
-        />
+        <Suspense fallback={null}>
+          <GalleryCollection />
+        </Suspense>
       </PageFrame>
     </>
   );

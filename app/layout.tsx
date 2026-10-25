@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Cormorant_Garamond, DM_Mono, DM_Sans } from "next/font/google";
 import {
   defaultOgImage,
-  serializedSiteJsonLd,
   siteDescription,
   siteTitle,
 } from "@/lib/seo";
+import { SiteJsonLd } from "@/components/site-json-ld";
 import { siteConfig } from "@/lib/siteConfig";
 import "./globals.css";
 
@@ -96,10 +97,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${cormorant.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializedSiteJsonLd }}
-        />
+        <Suspense fallback={null}>
+          <SiteJsonLd />
+        </Suspense>
         {children}
       </body>
     </html>

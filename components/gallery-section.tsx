@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { buttonVariants } from "@/components/ui/button";
-import { services, type Service } from "@/lib/site-data";
+import type { GalleryItem } from "@/lib/gallery-types";
 import {
   container,
   eyebrowClass,
@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type GallerySectionProps = {
-  images?: Service[];
+  items: GalleryItem[];
   showFilters?: boolean;
   showMore?: boolean;
   title?: string;
@@ -25,12 +25,12 @@ type GallerySectionProps = {
 };
 
 export function GallerySection({
-  images = services,
+  items,
   showFilters = true,
   showMore = false,
   title = "Mehendi, In Detail",
   eyebrow = "Image studies",
-  note = "These illustrative images are not actual client work by Janu. Approved portfolio photographs can replace them when supplied.",
+  note = "A selection of studio designs and recent photographs from the collection.",
   headingLevel = "h2",
   contactHref = "#contact",
 }: GallerySectionProps) {
@@ -61,7 +61,7 @@ export function GallerySection({
           </p>
         </div>
 
-        <GalleryGrid images={images} showFilters={showFilters} />
+        <GalleryGrid items={items} showFilters={showFilters} />
 
         <div className="mt-9 flex flex-col items-center gap-5">
           {showMore ? (

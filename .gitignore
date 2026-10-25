@@ -20,6 +20,9 @@
 # production
 /build
 
+# local backend storage (sqlite database + uploaded gallery images)
+/.data/
+
 # misc
 .DS_Store
 *.pem

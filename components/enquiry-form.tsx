@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { siteConfig } from "@/lib/siteConfig";
-import { occasions, services } from "@/lib/site-data";
 import { useEnquiry } from "@/components/enquiry-context";
+import { useSiteContact } from "@/components/site-contact-provider";
+import { whatsappHref } from "@/lib/site-contact";
+import { occasions, services } from "@/lib/site-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ const labelClass =
 
 export function EnquiryForm() {
   const { selectedService, selectService } = useEnquiry();
+  const { contact, isLoading: isLoadingContact } = useSiteContact();
   const [occasion, setOccasion] = useState("");
   const [message, setMessage] = useState("");
   const [messageIsError, setMessageIsError] = useState(false);
@@ -77,7 +79,17 @@ export function EnquiryForm() {
       return;
     }
 
-    if (!siteConfig.whatsappNumber.trim()) {
+    if (isLoadingContact) {
+      setMessageIsError(true);
+      setMessage(
+        "Contact details are still loading. Please try again in a moment.",
+      );
+      return;
+    }
+
+    const whatsappNumber = contact.whatsappNumber.trim();
+
+    if (!whatsappNumber) {
       setMessageIsError(true);
       setMessage(
         "Your enquiry is ready, but WhatsApp contact has not been configured yet. Nothing has been sent. Please contact Mehandi by Janu once verified contact details are available.",
@@ -85,7 +97,15 @@ export function EnquiryForm() {
       return;
     }
 
-    const number = siteConfig.whatsappNumber.replace(/\D/g, "");
+    const chatUrl = whatsappHref(whatsappNumber);
+
+    if (!chatUrl) {
+      setMessageIsError(true);
+      setMessage(
+        "The saved WhatsApp number is not valid. Please contact Mehandi by Janu directly.",
+      );
+      return;
+    }
     const enquiry = [
       "Hello Janu, I would like to enquire about a mehendi appointment.",
       "",
@@ -101,7 +121,7 @@ export function EnquiryForm() {
       .join("\n");
 
     const draft = window.open(
-      `https://wa.me/${number}?text=${encodeURIComponent(enquiry)}`,
+      `${chatUrl}?text=${encodeURIComponent(enquiry)}`,
       "_blank",
       "noopener,noreferrer",
     );
