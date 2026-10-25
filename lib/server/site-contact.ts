@@ -1,9 +1,15 @@
-import type { SiteContact, SiteContactInput } from "@/lib/site-contact";
+import {
+  validateSiteContact,
+  type SiteContact,
+  type SiteContactInput,
+} from "@/lib/site-contact";
 import {
   getSiteContactRecord,
+  hasPersistentStorage,
   saveSiteContactRecord,
   type SiteContactRecord,
 } from "@/lib/server/db";
+import { siteConfig } from "@/lib/siteConfig";
 
 function toSiteContact(record: SiteContactRecord): SiteContact {
   return {
@@ -16,9 +22,37 @@ function toSiteContact(record: SiteContactRecord): SiteContact {
   };
 }
 
+/** Contact details supplied by environment variables on read-only hosts. */
+function configuredContact(): SiteContact {
+  const phone = validateSiteContact({ phoneNumber: siteConfig.phoneNumber });
+  const whatsapp = validateSiteContact({
+    whatsappNumber: siteConfig.whatsappNumber,
+  });
+  const instagram = validateSiteContact({
+    instagramUrl: siteConfig.instagramUrl,
+  });
+
+  return {
+    phoneNumber: phone.ok ? phone.value.phoneNumber : "",
+    whatsappNumber: whatsapp.ok ? whatsapp.value.whatsappNumber : "",
+    instagramUrl: instagram.ok ? instagram.value.instagramUrl : "",
+    updatedAt: null,
+  };
+}
+
 /** Public contact details used by the footer, enquiry form and metadata. */
 export function getSiteContact(): SiteContact {
-  return toSiteContact(getSiteContactRecord());
+  if (!hasPersistentStorage()) return configuredContact();
+
+  try {
+    return toSiteContact(getSiteContactRecord());
+  } catch (error) {
+    console.warn(
+      "Could not read contact details from the database; using environment defaults.",
+      error,
+    );
+    return configuredContact();
+  }
 }
 
 export function saveSiteContact(input: SiteContactInput): SiteContact {

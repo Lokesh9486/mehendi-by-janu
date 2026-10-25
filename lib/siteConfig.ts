@@ -1,6 +1,11 @@
 /**
- * Site-wide defaults. Contact details are edited from the admin Contact screen
- * after the first run; the values below are only used to seed that row.
+ * Site-wide defaults.
+ *
+ * On a host with a persistent disk, contact details are edited from the admin
+ * Contact screen after the first run. On read-only hosts (Netlify, Vercel,
+ * etc.) the public site falls back to the values here, so set the
+ * MEHANDI_PHONE_NUMBER, MEHANDI_WHATSAPP_NUMBER and MEHANDI_INSTAGRAM_URL
+ * environment variables in the hosting dashboard.
  *
  * WhatsApp must be the full international number using digits only, no +.
  *
@@ -13,7 +18,10 @@ const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || fallbackSi
 export const siteConfig = {
   siteUrl: configuredSiteUrl.replace(/\/+$/, ""),
   location: "Tiruppur (Tirupur), Tamil Nadu",
-  whatsappNumber: "",
-  phoneNumber: "",
-  instagramUrl: "",
+  whatsappNumber: (process.env.MEHANDI_WHATSAPP_NUMBER?.trim() || "").replace(
+    /\D/g,
+    "",
+  ),
+  phoneNumber: process.env.MEHANDI_PHONE_NUMBER?.trim() || "",
+  instagramUrl: process.env.MEHANDI_INSTAGRAM_URL?.trim() || "",
 };

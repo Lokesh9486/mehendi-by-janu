@@ -73,6 +73,23 @@ How it is wired:
 > with an ephemeral filesystem will lose uploads and the database between
 > deploys.
 
+## Deployment and read-only hosts
+
+Netlify, Vercel, and similar serverless platforms do not provide a persistent
+writable disk. On those hosts the app automatically switches to a read-only
+mode:
+
+- The public home page and gallery use the built-in designs from `/public`.
+- The admin studio is disabled and shows a read-only notice instead of failing.
+- Contact details come from environment variables rather than the database:
+  - `MEHANDI_PHONE_NUMBER` — e.g. `+91 98765 43210`
+  - `MEHANDI_WHATSAPP_NUMBER` — country code plus number, digits only
+  - `MEHANDI_INSTAGRAM_URL` — full Instagram profile URL
+
+For the admin studio (gallery uploads, contact editing, password changes), deploy
+to a host with a persistent disk. Set `MEHANDI_DATA_DIR` to a persistent volume
+path there if needed.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

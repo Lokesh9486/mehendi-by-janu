@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { AdminLoginForm } from "@/components/admin/login-form";
 import { getAdminSession } from "@/lib/server/auth";
+import { hasPersistentStorage } from "@/lib/server/db";
 
 export const metadata: Metadata = {
   title: "Admin sign in",
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
 
 const SESSION_ENDED_NOTICE =
   "You were signed out because this account signed in on another device. Only one session is allowed at a time.";
+
+const STORAGE_NOTICE =
+  "This deployment is read-only. The admin studio needs a server with a persistent disk, so sign-in is disabled. The public site is still online.";
 
 function LoginFallback() {
   return (
@@ -39,11 +43,14 @@ async function LoginGate({
 
   if (session) redirect("/admin");
 
-  return (
-    <AdminLoginForm
-      notice={params.reason === "session-ended" ? SESSION_ENDED_NOTICE : undefined}
-    />
-  );
+  const notice =
+    params.reason === "session-ended"
+      ? SESSION_ENDED_NOTICE
+      : hasPersistentStorage()
+        ? undefined
+        : STORAGE_NOTICE;
+
+  return <AdminLoginForm notice={notice} />;
 }
 
 export default function AdminLoginPage({

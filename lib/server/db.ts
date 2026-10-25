@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { accessSync, constants, mkdirSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import {
   DATA_DIR,
@@ -57,6 +57,37 @@ const globalForDb = globalThis as typeof globalThis & {
   __mehandiDb?: DatabaseSync;
   __mehandiDbSchema?: number;
 };
+
+/**
+ * Serverless hosts expose the project directory as read-only and do not keep
+ * files between invocations. The admin studio cannot work there, but the
+ * public site can still be served from the built-in gallery and environment
+ * configured contact details.
+ */
+const NON_PERSISTENT_HOST = Boolean(
+  process.env.NETLIFY || process.env.SITE_ID || process.env.VERCEL,
+);
+
+let persistentStorage: boolean | null = null;
+
+export function hasPersistentStorage(): boolean {
+  if (persistentStorage !== null) return persistentStorage;
+
+  if (NON_PERSISTENT_HOST) {
+    persistentStorage = false;
+    return false;
+  }
+
+  try {
+    mkdirSync(/*turbopackIgnore: true*/ UPLOADS_DIR, { recursive: true });
+    accessSync(/*turbopackIgnore: true*/ DATA_DIR, constants.W_OK);
+    persistentStorage = true;
+  } catch {
+    persistentStorage = false;
+  }
+
+  return persistentStorage;
+}
 
 const GALLERY_TABLE = `
   CREATE TABLE IF NOT EXISTS gallery_items (
@@ -234,6 +265,12 @@ function seedSiteContact(db: DatabaseSync) {
 }
 
 export function getDb() {
+  if (!hasPersistentStorage()) {
+    throw new Error(
+      "Persistent storage is unavailable on this host. The admin studio needs a server with a writable, persistent disk.",
+    );
+  }
+
   const existing = globalForDb.__mehandiDb;
 
   if (existing) {
@@ -267,6 +304,10 @@ export function getDb() {
 }
 
 export function getDataDir() {
+  if (!hasPersistentStorage()) {
+    throw new Error("Persistent storage is unavailable on this host.");
+  }
+
   mkdirSync(/*turbopackIgnore: true*/ DATA_DIR, { recursive: true });
   return DATA_DIR;
 }

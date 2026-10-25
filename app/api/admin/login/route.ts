@@ -1,4 +1,5 @@
 import { startSession, verifyCredentials } from "@/lib/server/auth";
+import { hasPersistentStorage } from "@/lib/server/db";
 import {
   decryptSecureEnvelope,
   SecurePayloadError,
@@ -11,6 +12,16 @@ import {
 } from "@/lib/server/rate-limit";
 
 export async function POST(request: Request) {
+  if (!hasPersistentStorage()) {
+    return Response.json(
+      {
+        error:
+          "The admin studio needs a server with a persistent disk. This deployment is read-only, but the public site is still online.",
+      },
+      { status: 503 },
+    );
+  }
+
   const fingerprint = requestFingerprint(request);
   const attempt = consumeAttempt(`login:${fingerprint}`);
 

@@ -7,6 +7,7 @@ import {
 import {
   clearSession,
   getAdminUser,
+  hasPersistentStorage,
   savePassword,
   saveSession,
   type AdminRecord,
@@ -25,6 +26,10 @@ export async function verifyCredentials(
   email: string,
   password: string,
 ): Promise<AdminRecord | null> {
+  if (!hasPersistentStorage()) {
+    throw new Error("Persistent storage is unavailable on this host.");
+  }
+
   const admin = getAdminUser();
   if (!admin) return null;
 
@@ -59,6 +64,8 @@ export async function startSession(): Promise<void> {
 }
 
 export async function getAdminSession(): Promise<AdminSession | null> {
+  if (!hasPersistentStorage()) return null;
+
   const store = await cookies();
   const token = store.get(ADMIN_COOKIE_NAME)?.value;
 
